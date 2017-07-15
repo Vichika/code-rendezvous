@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Code Rendezvous Simple</title>
+    <link rel="shortcut icon" href="assets/favicon.png">
+    <link rel="stylesheet" href="node_modules/sweetalert/dist/sweetalert.css">
+    <link rel="stylesheet" href="node_modules/bulma/css/bulma.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
+        integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <div id="app">
+        <input type='text' v-model='search' @keyup.enter='getLocations'/>
+        <select v-model='selectedLanguage'>
+            <option v-for='language in languages' :value='language'>{{language}}</option>
+        </select>
+        <div id="map">
+
+        </div>
+    </div>
+    <script type="text/x-template" id="hamburger">
+        <div class='column is-1 has-text-centered'>
+            <a href="#">
+                <svg width="30" height="30">
+                    <path d="M0,5 30,5" stroke="#000" stroke-width="5" />
+                    <path d="M0,14 30,14" stroke="#000" stroke-width="5" />
+                    <path d="M0,23 30,23" stroke="#000" stroke-width="5" />
+                </svg>
+            </a>
+        </div>
+    </script>
+    <script type="text/x-template" id="sidenav">
+        <div id="sidenav-container">
+
+        </div>
+    </script>
+    <!-- Sweet Alert -->
+    <script src="node_modules/sweetalert/dist/sweetalert.min.js"></script>
+    <!-- jQuery  -->
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <!-- vue -->
+    <script src="node_modules/vue/dist/vue.js"></script>
+    <!-- vue-resource -->
+    <script src="node_modules/vue-resource/dist/vue-resource.js"></script>
+    <!-- js for loading gmaps -->
+    <script src="gmaps.js"></script>
+    <!-- main js file that includes root vue instance -->
+    <script src="app.js"></script>
+    <!-- initial map loading -->
+    <script async src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDfFObV8unb6gwKuKVub7rWXVaAWn_RX8U&callback=initMap"
+        onerror="gmapsError()">
+    </script>
+</body>
+
+</html>

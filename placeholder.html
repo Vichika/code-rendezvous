@@ -1,0 +1,73 @@
+<transition name="fade">
+    <hamburger-menu v-if="!sideBarOpen" @click.native="openSideBar" />
+</transition>
+<transition name="slide">
+    <sidenav v-if="sideBarOpen" @click.native="sideBarOpen = !sideBarOpen" />
+</transition>
+<div id="main">
+    <!-- Add all your websites page content here  -->
+</div>
+<script>    
+    var hamburger = {
+    template: '#hamburger'
+}
+
+var sidenav = {
+    template: '#sidenav',
+    mounted: function() {
+        document.getElementById("sidenav-container").style.width = "250px";
+        document.getElementById("main").style.marginLeft = "250px";
+    }
+}
+
+var app = new Vue({
+    components: {
+        'hamburger-menu' : hamburger,
+        'sidenav' : sidenav
+    },
+    data: function() {
+        return {
+            msg: 'hello',
+            sideBarOpen: false
+        }
+    },
+    methods: {
+        openSideBar: function(){
+            this.sideBarOpen = true;
+        }
+    }
+}).$mount('#app');
+</script>
+
+<style>
+
+    body {
+  overflow-x: hidden;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .4s
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0
+}
+
+/* .slide-enter-active, .slide-leave-active {
+  transition: width .9s
+}
+.slide-enter, .slide-leave-to {
+  width: 0
+} */
+
+#sidenav-container {
+    height: 100%; /* 100% Full-height */
+    width: 0; /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Stay on top */
+    top: 0;
+    left: 0;
+    background-color: #111; /* Black*/
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 60px; /* Place content 60px from the top */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+</style>
