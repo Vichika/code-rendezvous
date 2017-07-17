@@ -10,7 +10,50 @@ var app = new Vue({
             selectedLanguage: 'JavaScript',
             locations: [],
             search: '',
-            filter: ''
+            filter: '',
+            drawer: true,
+            items: [{
+                    icon: 'trending_up',
+                    text: 'Most Popular'
+                },
+                {
+                    icon: 'subscriptions',
+                    text: 'Subscriptions'
+                },
+                {
+                    icon: 'history',
+                    text: 'History'
+                },
+                {
+                    icon: 'featured_play_list',
+                    text: 'Playlists'
+                },
+                {
+                    icon: 'watch_later',
+                    text: 'Watch Later'
+                }
+            ],
+            items2: [{
+                    picture: 28,
+                    text: 'Joseph'
+                },
+                {
+                    picture: 38,
+                    text: 'Apple'
+                },
+                {
+                    picture: 48,
+                    text: 'Xbox Ahoy'
+                },
+                {
+                    picture: 58,
+                    text: 'Nokia'
+                },
+                {
+                    picture: 78,
+                    text: 'MKBHD'
+                },
+            ]
         }
     },
     methods: {
@@ -43,7 +86,7 @@ var app = new Vue({
         handleMuResponse: function (responseObj) {
             var infowindow = new google.maps.InfoWindow();
             // reset locations if a previous search was done
-            if (this.locations.length > 0) {      
+            if (this.locations.length > 0) {
                 this.locations = [];
                 this.removeMarkers();
                 markers = [];
@@ -140,17 +183,17 @@ var app = new Vue({
                         });
 
                     }, index * 150); // end of marker object and animation
-                    
+
                 }); //end of locations loop
                 map.panToBounds(bounds);
                 // wait til all markers are loaded and page is idle before fitting bounds
                 google.maps.event.addListenerOnce(map, 'idle', function () {
-                        console.log('map is idle');
-                        map.fitBounds(bounds);
-                        
+                    console.log('map is idle');
+                    map.fitBounds(bounds);
+
                 });
-                
-                
+
+
             } else {
                 // response not successful 
                 var status = responseObj.meta.status,
@@ -177,7 +220,7 @@ var app = new Vue({
                 return data.json();
             }, function (error) {
                 // handle errors
-            }).then(function(payload){
+            }).then(function (payload) {
                 console.dir(payload);
                 app.handleMuResponse(payload);
             });

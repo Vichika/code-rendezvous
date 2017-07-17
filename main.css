@@ -1,5 +1,32 @@
-#map {
-    width: 72%;
-    height: 100vh;
-    float: right;
+ #map {
+   height: 100vh;
+   padding: 0;
+   margin: 0;
+   width: 100%;
+ }
+.container {
+     padding: 0; 
+     margin: 0;
 }
+
+    /* #app {
+        height: 100vh;
+    } */
+
+ #e3, #e3 .container {
+    min-height: 700px;
+    overflow: hidden;
+    z-index: 0;
+  }
+
+  #e3 .input-group__details:after {
+    background-color: rgba(255,255,255,0.32) !important;
+  }
+
+  #e3 .input-group--focused .input-group__append-icon {
+    color: inherit !important;
+  }
+
+  main {
+       height: 100vh;
+  }
