@@ -20,21 +20,28 @@
     <div id="app">
         <v-app height="100%" dark id="e3" standalone class="blue-grey darken-4">
             <!-- side nav  -->
-            <v-navigation-drawer class="pa-3 blue-grey darken-4" 
+            <v-navigation-drawer class="pl-2 pr-2 blue-grey darken-4" 
                                 persistent absolute height="100%" 
                                 enable-resize-watcher 
                                 v-model="drawer">
-                    
+                    <v-toolbar-title v-if="drawer" class="pb-2">
+                        <v-icon fa class="pr-1 pb-1">code</v-icon>
+                            Code Rendezvous
+                        <v-toolbar-side-icon class="mr-3" 
+                                             @click.native.stop="drawer = !drawer">
+                        </v-toolbar-side-icon>
+                    </v-toolbar-title>
                     <!-- language selector  -->
                     <v-select   v-bind:items="languages" 
                                 v-model="selectedLanguage" 
                                 dark 
-                                item-value="text">
+                                item-value="text"
+                                class="pl-3 pr-3">
                     </v-select>
                     <!-- end language selector  -->
-                            
+                           
                     <!-- search input  -->
-                    <v-text-field   class="mb-5" 
+                    <v-text-field   class="mb-3 pl-3 pr-3" 
                                     label="Enter City, State" 
                                     single-line 
                                     append-icon="search" 
@@ -44,12 +51,20 @@
                     </v-text-field>
                     <!--end search input  -->
                     
-                <v-list>
-                    <v-subheader class="blue-grey darken-4" v-if="locations.length > 0">Locations</v-subheader>
+                <v-list class="pa-0">
+                    <!-- Filter  -->
+                    <v-text-field   class="pl-3 pr-3 blue-grey darken-4" 
+                                    v-if="locations.length > 0" 
+                                    hide-details  single-line
+                                    placeholder="Filter Results">
+                    </v-text-field>
+                    <!-- End Filter  -->
                     <v-list class="blue-grey darken-4">
                         <v-list-tile v-for="(location, i) in locations" :key="location.id" avatar>
                             <v-list-tile-title>
-                                {{ i+1 + ') ' + location.name}}
+                                <a :href="location.link" target="_blank">
+                                    {{ i+1 + ') ' + location.name}}
+                                </a>
                             </v-list-tile-title>
                         </v-list-tile>
                     </v-list>
@@ -57,9 +72,8 @@
             </v-navigation-drawer>
             <!-- end side nav  -->
             <!-- header  -->
-            <v-toolbar class="blue-grey darken-4">
+            <v-toolbar class="blue-grey darken-4" v-if="!drawer">
                 <v-toolbar-side-icon @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
-                
                 <v-toolbar-title>
                     <v-icon fa class="pr-1 pb-1">code</v-icon>
                     Code Rendezvous

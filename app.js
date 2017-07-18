@@ -9,6 +9,7 @@ var app = new Vue({
             languages: ["JavaScript", "Python", "Ruby", "Java", "PHP", "C/C++", "CSS"],
             selectedLanguage: 'JavaScript',
             locations: [],
+            filteredLocations: [],
             search: '',
             filter: '',
             drawer: true

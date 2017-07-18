@@ -4,14 +4,11 @@
    margin: 0;
    width: 100%;
  }
-.container {
+
+ .container {
      padding: 0; 
      margin: 0;
 }
-
-    /* #app {
-        height: 100vh;
-    } */
 
  #e3, #e3 .container {
     min-height: 700px;
@@ -29,4 +26,15 @@
 
   main {
        height: 100vh;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  label {
+    padding-left: 15px;
+  }
+  ul {
+    padding: 0;
   }
