@@ -1,28 +1,24 @@
 'use strict';
 // Root Vue Instance
 var app = new Vue({
-    components: {
-
-    },
     data: function () {
         return {
             languages: ["JavaScript", "Python", "Ruby", "Java", "PHP", "C/C++", "CSS"],
             selectedLanguage: 'JavaScript',
             locations: [],
-            filteredLocations: [],
-            search: '',
-            filter: '',
-            drawer: true
+            search: 'Santa Monica, Ca',
+            resultsFilter: '',
+            drawer: true,
+            locationsFound: false,
+            noLocationsFound: false
         }
     },
     methods: {
-        triggerMarker: function (marker_name) {
-            var len = markers.length;
-            for (var i = 0; i < len; i++) {
-                if (marker_name === markers[i].name) {
-                    google.maps.event.trigger(markers[i], 'click');
-                }
-            }
+        triggerMarker: function (i) {
+            google.maps.event.trigger(markers[i], 'click');
+            // var childNum = i + 1;
+            // var li = document.querySelector("[data-uid |= '17'] li:nth-child("+childNum+")");
+            // console.log(li);
         },
         removeMarkers: function () {
             var len = markers.length;
@@ -38,6 +34,10 @@ var app = new Vue({
                 counter++;
             }
         },
+        openMeetupPage: function(link) {
+            window.open(link, '_blank');
+            window.focus();
+        },
         /**
          * @desc this method will be called to handle response from MeetUP
          * @param {object} response retrieved from meetup api
@@ -52,26 +52,19 @@ var app = new Vue({
             }
             if (responseObj.meta.status == 200) {
                 this.locations = responseObj.data;
-                var len = this.locations.length;
-                if (len === 0) {
-                    swal({
-                        title: "Zero Results",
-                        text: "Sorry, but this query didn't return any results. Please try again!",
-                        type: "error",
-                        confirmButtonText: "Try Again"
-                    });
+                if (this.locations.length > 0) {
+                    this.locationsFound = true;
+                    setTimeout(function() {
+                        app.locationsFound = false;
+                    }, 6000);
                 }
-                // if website just loaded, do not show sweet alert
-                if (sessionStorage.notInitialLoad) {
-                    swal({
-                        title: "Request Successful",
-                        text: "There were " + len + " results!",
-                        type: "success",
-                        confirmButtonText: "OK"
-                    });
-                } else {
-                    sessionStorage.notInitialLoad = true;
+                else {
+                    this.noLocationsFound = true;
+                    setTimeout(function() {
+                        app.noLocationsFound = false;
+                    }, 6000);
                 }
+               
 
                 var bounds = new google.maps.LatLngBounds();
                 // console.log(bounds);
@@ -89,42 +82,28 @@ var app = new Vue({
                         var current_location = new google.maps.LatLng(pos.lat, pos.lng);
                         // set bound limits
                         bounds.extend(current_location);
-                        // can add single digit label if results are <= 9
-                        if (list.length <= 9) {
-                            marker = new google.maps.Marker({
-                                map: map,
-                                name: location.name,
-                                index: index,
-                                position: pos,
-                                draggable: true,
-                                meetupID: location.id,
-                                animation: google.maps.Animation.DROP,
-                                label: num.toString()
-
-                            });
-                        } else {
-                            // marker without label because not readable if more than 9 results
-                            marker = new google.maps.Marker({
-                                map: map,
-                                name: location.name,
-                                index: index,
-                                position: pos,
-                                draggable: true,
-                                meetupID: location.id,
-                                animation: google.maps.Animation.DROP
-                            });
-                        }
+                        
+                        // configure new marker 
+                        marker = new google.maps.Marker({
+                            map: map,
+                            name: location.name,
+                            index: index,
+                            position: pos,
+                            draggable: true,
+                            meetupID: location.id,
+                            animation: google.maps.Animation.DROP
+                        });
+                       
                         // add to global markers array to keep track of all markers
                         markers.push(marker);
                         marker.addListener('click', function () {
                             infowindow.close();
                             if (location.key_photo !== undefined) {
-                                infowindow.setContent('<div style="text-align:center"><h4><a href=' + location.link + ' target="_blank">' + location.name + '</h4>' +
-                                    '<img src=' + location.key_photo.thumb_link + '><br />' +
-                                    '<span>lat: ' + location.lat + ',  lon: ' + location.lon + '</span></div>');
+                                infowindow.setContent('<div class="infowindow"><p><a href=' + location.link + ' target="_blank">' + location.name + '</p>' +
+                                    '<img src=' + location.key_photo.thumb_link + '><br />'+'<p>'+location.description+'</p>');
                             } else {
-                                infowindow.setContent('<div style="text-align:center"><h4><a href=' + location.link + ' target="_blank">' + location.name + '</h4>' +
-                                    '<span>lat: ' + location.lat + ',  lon: ' + location.lon + '</span></div>');
+                                infowindow.setContent('<div class="infowindow"><p><a href=' + location.link + ' target="_blank">' + location.name + '</p>'
+                                +'<p>'+location.description+'</p>');
                             }
 
                             infowindow.open(map, marker);
@@ -159,15 +138,23 @@ var app = new Vue({
                     code = responseObj.data.errors[0].code,
                     msg = responseObj.data.errors[0].message;
 
-                swal({
-                    title: "Request Error",
-                    text: "Sorry, the server returned a status of " + status + ", the code is " + code + " due to " + msg,
-                    type: "error"
-                });
+                /***** implement vuetify error alert ***/
             }
         }, // end of handleMuResponse
 
+        verifyIfLocationPicked: function() {
+            if (!this.search) {
+                 return;
+            } else {
+                this.getLocations();
+            }
+        },
+
         getLocations: function () {
+            if (!this.search) {
+                this.noLocation = true;
+                return;
+            }
             // note: meetup api does not respond properly if the url is broken into multiple lines, even using es6 template strings 
             var url = `https://api.meetup.com/find/groups/?&location=${this.search}&radius=10&topic_id=${this.getLangId}&key=17a7b116332318a3d35e162e335f&`
             console.log(url);
@@ -211,6 +198,11 @@ var app = new Vue({
                 default:
                     return '7029';
             }
+        },
+        filteredLocations: function() {
+           return this.locations.filter(function(location) {
+                return location.name.toLowerCase().indexOf(app.resultsFilter.toLowerCase()) > -1;
+            });
         }
     }
 

@@ -1,4 +1,8 @@
- #map {
+.navigation-drawer {
+  width: 307px;
+} 
+
+#map {
    height: 100vh;
    padding: 0;
    margin: 0;
@@ -37,4 +41,10 @@
   }
   ul {
     padding: 0;
+  }
+
+  .infowindow {
+    width: 200px;
+    height: 200px;
+    text-align: center;
   }

@@ -8,7 +8,6 @@
     <title>Code Rendezvous Simple</title>
     <link rel="shortcut icon" href="assets/favicon.png">
     <link rel="stylesheet" href="node_modules/vuetify/dist/vuetify.min.css">
-    <link rel="stylesheet" href="node_modules/sweetalert/dist/sweetalert.css">
     <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
@@ -36,7 +35,9 @@
                                 v-model="selectedLanguage" 
                                 dark 
                                 item-value="text"
-                                class="pl-3 pr-3">
+                                class="pl-3 pr-3"
+                                @change="verifyIfLocationPicked"
+                                v-tooltip:top="{ html: 'Pick a language from the dropdown' }">
                     </v-select>
                     <!-- end language selector  -->
                            
@@ -47,31 +48,31 @@
                                     append-icon="search" 
                                     hide-details 
                                     v-model="search"
-                                    @keyup.native.enter="getLocations">
+                                    @keyup.native.enter="getLocations"
+                                     v-tooltip:bottom="{ html: 'Hit enter when ready' }">
                     </v-text-field>
                     <!--end search input  -->
                     
                 <v-list class="pa-0">
-                    <!-- Filter  -->
+                    <!-- Filter Results -->
                     <v-text-field   class="pl-3 pr-3 blue-grey darken-4" 
-                                    v-if="locations.length > 0" 
+                                    v-if="locations.length > 0"
                                     hide-details  single-line
-                                    placeholder="Filter Results">
+                                    placeholder="Filter Results Below"
+                                    v-model="resultsFilter">
                     </v-text-field>
-                    <!-- End Filter  -->
+                    <!-- End Filter Results -->
                     <v-list class="blue-grey darken-4">
-                        <v-list-tile v-for="(location, i) in locations" :key="location.id" avatar>
-                            <v-list-tile-title>
-                                <a :href="location.link" target="_blank">
+                        <v-list-tile v-for="(location, i) in filteredLocations" :key="location.id" avatar>
+                            <v-list-tile-title @click="triggerMarker(i)" @dblclick.stop.prevent="openMeetupPage(location.link)">
                                     {{ i+1 + ') ' + location.name}}
-                                </a>
                             </v-list-tile-title>
                         </v-list-tile>
                     </v-list>
                 </v-list>
             </v-navigation-drawer>
             <!-- end side nav  -->
-            <!-- header  -->
+            <!-- header (only shows when side nav is closed) -->
             <v-toolbar class="blue-grey darken-4" v-if="!drawer">
                 <v-toolbar-side-icon @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
                 <v-toolbar-title>
@@ -79,6 +80,17 @@
                     Code Rendezvous
                 </v-toolbar-title>
                 <v-spacer></v-spacer>
+                 <v-menu :nudge-width="100">
+                    <v-toolbar-title slot="activator">
+                        <span>Locations</span>
+                        <v-icon dark>arrow_drop_down</v-icon>
+                    </v-toolbar-title>
+                    <v-list>
+                        <v-list-tile v-for="(location, i) in filteredLocations" :key="location.id">
+                            <v-list-tile-title @click="triggerMarker(i)">{{location.name}}</v-list-tile-title>
+                        </v-list-tile>
+                    </v-list>
+                </v-menu>
            </v-toolbar>
             <!-- end header  -->
             <!-- map section  -->
@@ -86,11 +98,15 @@
                 <v-container>
                     <v-layout>
                         <v-flex xs12>
-                            <v-card>
-                                <v-card-media >
-                                     <div id="map"> </div>  
-                                </v-card-media>
-                            </v-card>
+                            <v-alert success v-model="locationsFound" dismissible>
+                                {{locations.length}} rendezvous locations were found for {{selectedLanguage}} in {{search}}
+                            </v-alert>
+                            <v-alert warning v-model="noLocationsFound" dismissible>
+                                Sorry, no {{selectedLanguage}} rendezvous locations were found in {{search}}
+                            </v-alert>
+                            <div id="map"> 
+                                <!-- map details fill out here  -->
+                            </div> 
                         </v-flex>
                     </v-layout>
                 </v-container>
@@ -98,8 +114,6 @@
             <!-- end map section  -->
         </v-app>
     </div>
-    <!-- Sweet Alert -->
-    <script src="node_modules/sweetalert/dist/sweetalert.min.js"></script>
     <!-- vue -->
     <script src="node_modules/vue/dist/vue.js"></script>
     <script src='node_modules/vuetify/dist/vuetify.min.js'></script>

@@ -1,5 +1,10 @@
 # Latest Developments
- - it is now mostly functional with Vue ( 7-14-2017 )
+### 7-18-2017
+- vuetify
+- remove sweetalert, use vuetify alerts instead
+- going to merge this branch with master
 
 # TODOS
- - ui, sidepanel ( still deciding about slide out menu functionality )
+ - horizontal toolbar, locations dropdown needs alignment fixing
+ - highlight location when clicked
+ - vuetify error alert on handleMU method
