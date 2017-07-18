@@ -11,49 +11,7 @@ var app = new Vue({
             locations: [],
             search: '',
             filter: '',
-            drawer: true,
-            items: [{
-                    icon: 'trending_up',
-                    text: 'Most Popular'
-                },
-                {
-                    icon: 'subscriptions',
-                    text: 'Subscriptions'
-                },
-                {
-                    icon: 'history',
-                    text: 'History'
-                },
-                {
-                    icon: 'featured_play_list',
-                    text: 'Playlists'
-                },
-                {
-                    icon: 'watch_later',
-                    text: 'Watch Later'
-                }
-            ],
-            items2: [{
-                    picture: 28,
-                    text: 'Joseph'
-                },
-                {
-                    picture: 38,
-                    text: 'Apple'
-                },
-                {
-                    picture: 48,
-                    text: 'Xbox Ahoy'
-                },
-                {
-                    picture: 58,
-                    text: 'Nokia'
-                },
-                {
-                    picture: 78,
-                    text: 'MKBHD'
-                },
-            ]
+            drawer: true
         }
     },
     methods: {
@@ -224,30 +182,6 @@ var app = new Vue({
                 console.dir(payload);
                 app.handleMuResponse(payload);
             });
-            // var requestUrl = encodeURI(url)
-            // console.log(requestUrl);
-            // $.ajax({
-            //     url: url,
-
-            //     dataType: "jsonp",
-
-            //     success: function (data) {
-            //         console.log(data);
-            //         // app.handleMuResponse(data);
-            //     },
-
-            //     error: function (error, msg, errorThrown) {
-            //         swal({
-            //             title: "Request Error",
-            //             text: "Cannot retrieve data from Meetup.com because of " +
-            //                 msg + " and " + errorThrown,
-            //             type: "error"
-            //         });
-            //         console.log(msg);
-            //         console.dir(error);
-            //     }
-
-            // });
         }
     },
 
