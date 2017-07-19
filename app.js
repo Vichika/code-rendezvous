@@ -10,7 +10,9 @@ var app = new Vue({
             resultsFilter: '',
             drawer: true,
             locationsFound: false,
-            noLocationsFound: false
+            noLocationsFound: false,
+            meetupError: false,
+            meetupErrorMsg: ''
         }
     },
     methods: {
@@ -29,11 +31,10 @@ var app = new Vue({
             }
         },
         resizeMap: function() {
-            console.log('map is resized');
             this.drawer = !this.drawer;
             setTimeout(function() {
                 google.maps.event.trigger(map, 'resize')
-            }, 250)
+            }, 200)
         },
         openMeetupPage: function(link) {
             window.open(link, '_blank');
@@ -68,9 +69,7 @@ var app = new Vue({
                
 
                 var bounds = new google.maps.LatLngBounds();
-                // console.log(bounds);
                 this.locations.forEach(function (location, index, list) {
-                    // console.log(location);
                     var marker;
                     // drop markers sequentially in an orderly fashion
                     setTimeout(function () {
@@ -127,7 +126,6 @@ var app = new Vue({
                 map.panToBounds(bounds);
                 // wait til all markers are loaded and page is idle before fitting bounds
                 google.maps.event.addListenerOnce(map, 'idle', function () {
-                    console.log('map is idle');
                     map.fitBounds(bounds);
 
                 });
@@ -136,8 +134,12 @@ var app = new Vue({
                 var status = responseObj.meta.status,
                     code = responseObj.data.errors[0].code,
                     msg = responseObj.data.errors[0].message;
+                this.meetupError = true;
+                this.meetupErrorMsg = msg;
+                setTimeout(function() {
+                    this.meetupError = false;
+                }, 5000);
 
-                /***** implement vuetify error alert ***/
             }
         }, // end of handleMuResponse
 
@@ -155,8 +157,7 @@ var app = new Vue({
                 return;
             }
             // note: meetup api does not respond properly if the url is broken into multiple lines, even using es6 template strings 
-            var url = `https://api.meetup.com/find/groups/?&location=${this.search}&radius=10&topic_id=${this.getLangId}&key=17a7b116332318a3d35e162e335f&`
-            console.log(url);
+            var url = `https://api.meetup.com/find/groups/?&location=${this.search}&radius=10&topic_id=${this.getLangId}&key=${MEETUP_API_KEY}`
             // start vue_resource jsonp ajax call
             var options = {
                 jsonp: 'callback'
@@ -166,7 +167,6 @@ var app = new Vue({
             }, function (error) {
                 // handle errors
             }).then(function (payload) {
-                console.dir(payload);
                 app.handleMuResponse(payload);
             });
         }

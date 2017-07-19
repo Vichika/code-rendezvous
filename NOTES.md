@@ -1,7 +1,6 @@
 # Latest Developments
 ### 7-18-2017
-- fixed map resizing issue 
+- added on github
 
 # TODOS
  - highlight location when clicked
- - vuetify error alert on handleMU method

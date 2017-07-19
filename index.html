@@ -103,6 +103,9 @@
                             <v-alert warning v-model="noLocationsFound" dismissible>
                                 Sorry, no {{selectedLanguage}} rendezvous locations were found in {{search}}
                             </v-alert>
+                            <v-alert warning v-model="meetupError" dismissible>
+                                Sorry, Meetup API returned an error: {{meetupErrorMsg}}
+                            </v-alert>
                             <div id="map"> 
                                 <!-- map details fill out here  -->
                             </div> 
@@ -118,13 +121,17 @@
     <script src='node_modules/vuetify/dist/vuetify.min.js'></script>
     <!-- vue-resource -->
     <script src="node_modules/vue-resource/dist/vue-resource.js"></script>
+    <!-- api keys -->
+    <script src='keys/secret.js'></script>
     <!-- js for loading gmaps -->
     <script src="gmaps.js"></script>
     <!-- main js file that includes root vue instance -->
     <script src="app.js"></script>
     <!-- initial map loading -->
-    <script async src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDfFObV8unb6gwKuKVub7rWXVaAWn_RX8U&callback=initMap"
+     
+<script async src="https://maps.googleapis.com/maps/api/js?v=3&key="+<!--Google Maps API key goes here -->"&callback=initMap"
         onerror="gmapsError()">
-    </script>
+    </script> 
+
 </body>
 </html>
