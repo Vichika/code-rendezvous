@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +13,6 @@
         integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
     <link rel="stylesheet" href="main.css">
 </head>
-
 <body>
     <div id="app">
         <v-app height="100%" dark id="e3" standalone class="blue-grey darken-4">
@@ -27,7 +25,7 @@
                         <v-icon fa class="pr-1 pb-1">code</v-icon>
                             Code Rendezvous
                         <v-toolbar-side-icon class="mr-3" 
-                                             @click.native.stop="drawer = !drawer">
+                                             @click.native.stop="resizeMap">
                         </v-toolbar-side-icon>
                     </v-toolbar-title>
                     <!-- language selector  -->
@@ -40,31 +38,30 @@
                                 v-tooltip:top="{ html: 'Pick a language from the dropdown' }">
                     </v-select>
                     <!-- end language selector  -->
-                           
                     <!-- search input  -->
                     <v-text-field   class="mb-3 pl-3 pr-3" 
                                     label="Enter City, State" 
                                     single-line 
-                                    append-icon="search" 
+                                    append-icon="location_city" 
                                     hide-details 
                                     v-model="search"
                                     @keyup.native.enter="getLocations"
-                                     v-tooltip:bottom="{ html: 'Hit enter when ready' }">
+                                    v-tooltip:bottom="{ html: 'Hit enter when ready' }">
                     </v-text-field>
                     <!--end search input  -->
-                    
                 <v-list class="pa-0">
                     <!-- Filter Results -->
                     <v-text-field   class="pl-3 pr-3 blue-grey darken-4" 
                                     v-if="locations.length > 0"
                                     hide-details  single-line
+                                    append-icon="search"
                                     placeholder="Filter Results Below"
                                     v-model="resultsFilter">
                     </v-text-field>
                     <!-- End Filter Results -->
                     <v-list class="blue-grey darken-4">
                         <v-list-tile v-for="(location, i) in filteredLocations" :key="location.id" avatar>
-                            <v-list-tile-title @click="triggerMarker(i)" @dblclick.stop.prevent="openMeetupPage(location.link)">
+                            <v-list-tile-title @click="triggerMarker(location.name)" @dblclick.stop.prevent="openMeetupPage(location.link)">
                                     {{ i+1 + ') ' + location.name}}
                             </v-list-tile-title>
                         </v-list-tile>
@@ -80,14 +77,16 @@
                     Code Rendezvous
                 </v-toolbar-title>
                 <v-spacer></v-spacer>
-                 <v-menu :nudge-width="100">
+                 <v-menu :nudge-right="175" v-if="locations.length > 0">
                     <v-toolbar-title slot="activator">
                         <span>Locations</span>
                         <v-icon dark>arrow_drop_down</v-icon>
                     </v-toolbar-title>
                     <v-list>
                         <v-list-tile v-for="(location, i) in filteredLocations" :key="location.id">
-                            <v-list-tile-title @click="triggerMarker(i)">{{location.name}}</v-list-tile-title>
+                            <v-list-tile-title @click="triggerMarker(location.name)">
+                                               {{location.name}}
+                            </v-list-tile-title>
                         </v-list-tile>
                     </v-list>
                 </v-menu>

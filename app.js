@@ -14,11 +14,13 @@ var app = new Vue({
         }
     },
     methods: {
-        triggerMarker: function (i) {
-            google.maps.event.trigger(markers[i], 'click');
-            // var childNum = i + 1;
-            // var li = document.querySelector("[data-uid |= '17'] li:nth-child("+childNum+")");
-            // console.log(li);
+        triggerMarker: function (name) {
+            var len = markers.length;
+            for (var i=0; i<len; i++) {
+                if (name == markers[i].name) {
+                    google.maps.event.trigger(markers[i], 'click');
+                }
+            }
         },
         removeMarkers: function () {
             var len = markers.length;
@@ -26,20 +28,19 @@ var app = new Vue({
                 markers[i].setMap(null);
             }
         },
-        showAllMarkers: function () {
-            var len = markers.length,
-                counter = 0;
-            while (counter < len) {
-                markers[counter].setVisible(true);
-                counter++;
-            }
+        resizeMap: function() {
+            console.log('map is resized');
+            this.drawer = !this.drawer;
+            setTimeout(function() {
+                google.maps.event.trigger(map, 'resize')
+            }, 250)
         },
         openMeetupPage: function(link) {
             window.open(link, '_blank');
             window.focus();
         },
         /**
-         * @desc this method will be called to handle response from MeetUP
+         * @desc Grab data for markers, pop them on the map
          * @param {object} response retrieved from meetup api
          */
         handleMuResponse: function (responseObj) {
@@ -130,8 +131,6 @@ var app = new Vue({
                     map.fitBounds(bounds);
 
                 });
-
-
             } else {
                 // response not successful 
                 var status = responseObj.meta.status,
@@ -158,7 +157,7 @@ var app = new Vue({
             // note: meetup api does not respond properly if the url is broken into multiple lines, even using es6 template strings 
             var url = `https://api.meetup.com/find/groups/?&location=${this.search}&radius=10&topic_id=${this.getLangId}&key=17a7b116332318a3d35e162e335f&`
             console.log(url);
-            // implement ajax call jsonp style, using vue resource
+            // start vue_resource jsonp ajax call
             var options = {
                 jsonp: 'callback'
             }
@@ -174,11 +173,6 @@ var app = new Vue({
     },
 
     computed: {
-        /**
-         *  @desc used to map selected language to topic id for meetup api,
-         *        topic ids can be found here https://secure.meetup.com/meetup_api/console/?path=/topics
-         *  @return {string}
-         */
         getLangId: function () {
             switch (this.selectedLanguage) {
                 case 'JavaScript':

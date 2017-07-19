@@ -120,23 +120,15 @@ function initMap() {
     var marker = new google.maps.Marker({
         position: mapOptions.center,
         map: map
-    }),
-    infowindow = new google.maps.InfoWindow();
-    infowindow.setContent("Santa Monica, CA");
-    infowindow.open(map, marker);
-    // close original marker after 5 secs
+    });
+    var infowindow = new google.maps.InfoWindow();
+    // infowindow.open(map, marker);
     setTimeout(function() {
         marker.setMap(null);
         infowindow.close();
     }, 5000);
-   
 }
 
 function gmapsError() {
-    swal({
-        title: "Request Error",
-        text: "Error with script tag loading Google Maps",
-        type: "error",
-        confirmButtonText: "OK"
-    });
+    alert('Error: Google Maps could not be loaded!');
 }
